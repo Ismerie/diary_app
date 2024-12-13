@@ -16,9 +16,7 @@ import AddEntryScreen from './screens/AddEntryScreen';
 const Stack = createStackNavigator();
 
 function AppNavigator() {
-	const { user, setUser } = useUser(); 
-
-	
+	const { user, setUser } = useUser(null); 
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -33,7 +31,7 @@ function AppNavigator() {
 	
 		// Cleanup the subscription
 		return () => unsubscribe();
-	}, [setUser]);
+	}, []);
 
 	return (
 		<NavigationContainer>

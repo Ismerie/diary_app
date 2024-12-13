@@ -10,7 +10,7 @@ import { getEmojiFeeling } from './utils/emote';
 export default function ListEntries() {
 	const [entries, setEntries] = useState([]);
 	const { user } = useUser()
-	const userEmail = user.email;
+	const userEmail = user?.email;
 
 	const navigation = useNavigation();
 

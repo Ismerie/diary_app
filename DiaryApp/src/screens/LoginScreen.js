@@ -6,7 +6,7 @@ import * as WebBrowser from "expo-web-browser";
 import axios from "axios";
 import { useUser } from "../UserContext"
 import { Ionicons } from '@expo/vector-icons';
-
+import { signInWithCredential, GoogleAuthProvider } from "firebase/auth"
 
 
 WebBrowser.maybeCompleteAuthSession();
@@ -19,10 +19,17 @@ export default function LoginScreen({navigation}) {
 	});
 
 	useEffect(() => {
-		if (response?.type === 'success') {
-			getUserData(response.authentication?.accessToken);
-		}
-	}, [response]);
+        if (response?.type === "success") {
+            const { idToken } = response.authentication;
+            const credential = GoogleAuthProvider.credential(idToken);
+            signInWithCredential(auth, credential)
+            .then(() => navigation.replace('ProfileScreen'))
+            .catch((err) => {
+                console.error(err);
+                Alert.alert("Erreur", "Une erreur est survenue lors de la connexion.");
+            });
+        }
+    }, [response]);
 
 	useEffect(() => {
 		// Si un utilisateur est authentifié, on navigue vers ProfileScreen
@@ -30,24 +37,6 @@ export default function LoginScreen({navigation}) {
 			navigation.replace('ProfileScreen');
 		}
 	}, [user]);
-	
-
-	const getUserData = async (token) => {
-		try {
-			const res = await axios.get("https://www.googleapis.com/userinfo/v2/me", {
-				headers: {
-					'Authorization': `Bearer ${token}`
-				}
-			});
-			if (res.status === 200) {
-				setUser(res.data);
-			} else {
-				throw new Error('Error fetching user data');
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	};
 
 	return (
 		<ImageBackground
