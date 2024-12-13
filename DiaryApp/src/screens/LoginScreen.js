@@ -1,61 +1,67 @@
-import React from 'react';
-import { useEffect, useState } from "react";
-
-import { auth, google_client } from "../config/firebaseConfig"
-
-import { StyleSheet, SafeAreaView, Platform, ImageBackground, TouchableOpacity, Text, Alert } from 'react-native';
-
+import React, { useEffect, useState } from "react";
+import { StyleSheet, SafeAreaView, TouchableOpacity, Text, ImageBackground } from 'react-native';
+import { auth, google_client } from "../config/firebaseConfig";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import axios from "axios";
-import { useNavigation } from '@react-navigation/native';
+import { useUser } from "../UserContext"
+
+
 
 WebBrowser.maybeCompleteAuthSession();
 
-
-export default function LoginScreen() {
-	const [user, setUser] = useState(null);
-	const navigation = useNavigation();
-
+export default function LoginScreen({navigation}) {
+	const { user, setUser } = useUser();
 	const [request, response, promptAsync] = Google.useAuthRequest({
 		androidClientId: google_client.android,
 		webClientId: google_client.web,
 	});
 
 	useEffect(() => {
-		console.log(request)
-		if (response?.type == 'success') {
-			getUserData(response.authentication?.accessToken)
+		if (response?.type === 'success') {
+			getUserData(response.authentication?.accessToken);
 		}
 	}, [response]);
 
-	const getUserData = async (token) => {
-		axios.get("https://www.googleapis.com/userinfo/v2/me", {
-			headers: {
-				'Authorization': `Bearer ${token}`
-			}
-		})
-		.then((res) => {
-			if (res.status != 200)
-                throw new Error('error');
-			console.log(res.data)
-			setUser(res.data)
-		})
-		.catch((err) => {
-			console.log(err)
-		})
-	}
+	useEffect(() => {
+		// Si un utilisateur est authentifié, on navigue vers ProfileScreen
+		if (user) {
+			navigation.replace('ProfileScreen');
+		}
+	}, [user]);
 	
 
+	const getUserData = async (token) => {
+		try {
+			const res = await axios.get("https://www.googleapis.com/userinfo/v2/me", {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			if (res.status === 200) {
+				setUser(res.data);
+			} else {
+				throw new Error('Error fetching user data');
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
-        <>
-			<Text style={styles.title}>Open your <Text style={{color: '#f7a072'}}>Diary</Text></Text>
-			<TouchableOpacity style={styles.buttonLogin} onPress={() => {promptAsync();}} >
-				<Text style={styles.fontButton}>Login</Text>
-			</TouchableOpacity>
-        </>
-		
-				
+		<ImageBackground
+            source={require('../../assets/background.jpeg')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+        >
+			<SafeAreaView style={styles.container}>
+				<Text style={styles.title}>Open your <Text style={{color: '#f7a072'}}>Diary</Text></Text>
+				{/* Bouton Google */}
+				<TouchableOpacity style={styles.buttonLogin} onPress={() => promptAsync()}>
+					<Text style={styles.fontButton}>Login with Google</Text>
+				</TouchableOpacity>
+			</SafeAreaView>
+		</ImageBackground>
 	);
 }
 
@@ -77,15 +83,21 @@ const styles = StyleSheet.create({
 		backgroundColor: '#eddea4',
 		padding: 15,
 		borderRadius: 10,
-		width: '100%'
-
+		width: '100%',
+	},
+	buttonLoginGit: {
+		position: 'absolute',
+		bottom: 120,
+		backgroundColor: '#eddea4',
+		padding: 15,
+		borderRadius: 10,
+		width: '100%',
 	},
 	fontButton: {
 		fontSize: 30,
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 	backgroundImage: {
         flex: 1,
     }
 });
-

@@ -1,7 +1,9 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, getReactNativePersistence, initializeAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Configuration Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDKE8Kvv9azUKg12if78n-nhBI2-FW-kvI",
   authDomain: "diary-ff7c2.firebaseapp.com",
@@ -11,15 +13,26 @@ const firebaseConfig = {
   appId: "1:185254127656:web:9dcadfd8166fbe5fe22d1d"
 };
 
+// Initialiser Firebase
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+// Initialiser Firestore
+const db = getFirestore(app);
 
-/*export const auth = initializeAuth(app, {
+// Initialiser Auth
+export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
-});*/
+});
 
+// Google Client
 export const google_client = {
-    web: "185254127656-bii9auuotum2oum3qcpolpeotj3i93om.apps.googleusercontent.com",
-    android: "185254127656-1dnrausuv4j27gjo34hpnu65d7k0j9e4.apps.googleusercontent.com"
-}
+  web: "185254127656-bii9auuotum2oum3qcpolpeotj3i93om.apps.googleusercontent.com",
+  android: "185254127656-1dnrausuv4j27gjo34hpnu65d7k0j9e4.apps.googleusercontent.com"
+};
+
+// GitHub Client
+export const github_client = {
+  clientId: "Ov23liMhPIfsBQwvpMUF",
+};
+
+export { db };

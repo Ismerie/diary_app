@@ -1,15 +1,58 @@
-import React from 'react';
-import { useEffect, useState } from "react";
-
-
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, Text, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, SafeAreaView, Platform, ImageBackground, TouchableOpacity, Text, Alert } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { UserProvider, useUser } from './UserContext';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from "./config/firebaseConfig";
 
-import AppNavigator from './AppNavigator';
+import LoginScreen from './screens/LoginScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import ViewEntryScreen from './screens/ViewEntryScreen';
+import AddEntryScreen from './screens/AddEntryScreen';
+
+const Stack = createStackNavigator();
+
+function AppNavigator() {
+	const { user, setUser } = useUser();        // Récupérer user depuis le contexte
+
+	
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+			if (currentUser) {
+				console.log('User signed in:', currentUser.email); // Debugging
+				setUser(currentUser);
+			} else {
+				console.log('No user is signed in'); // Debugging
+				setUser(null);
+			}
+		});
+	
+		// Cleanup the subscription
+		return () => unsubscribe();
+	}, [setUser]);
+
+	return (
+		<NavigationContainer>
+			<Stack.Navigator
+					initialRouteName={user ? "ProfileScreen" : "LoginScreen"} // Définir la route initiale en fonction de user
+					screenOptions={({ route, navigation }) => ({
+				headerShown: false,
+					})}
+			>
+					<Stack.Screen name="LoginScreen" component={LoginScreen} />
+					<Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+					<Stack.Screen name="ViewEntryScreen" component={ViewEntryScreen} />
+					<Stack.Screen name="AddEntryScreen" component={AddEntryScreen} />
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
+		}
 
 export default function App() {
-	const [user, setUser] = useState(null);
 
 	useEffect(() => {
 		if (Platform.OS != 'web') {
@@ -19,27 +62,19 @@ export default function App() {
 		}
 	}, []);
 
+	// Si l'utilisateur est connecté, il est redirigé vers ProfileScreen, sinon vers LoginScreen
 	return (
-		<ImageBackground
-			source={require('../assets/background.jpeg')}
-			style={styles.background}
-			resizeMode="cover"
-		>
-			<SafeAreaView style={styles.container}>
-				<AppNavigator/>
-				<StatusBar hidden={true} />
-			</SafeAreaView>
-		</ImageBackground>
-	);
+			<UserProvider>
+				<AppNavigator />
+			</UserProvider>
+	)
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "center"
-	},
-	background: {
-		flex: 1,
+		justifyContent: "center",
+		backgroundColor: 'pink'
 	},
 });
