@@ -16,17 +16,17 @@ import AddEntryScreen from './screens/AddEntryScreen';
 const Stack = createStackNavigator();
 
 function AppNavigator() {
-	const { user, setUser } = useUser();        // Récupérer user depuis le contexte
+	const { user, setUser } = useUser(); 
 
 	
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
 			if (currentUser) {
-				console.log('User signed in:', currentUser.email); // Debugging
+				console.log('User signed in:', currentUser.email);
 				setUser(currentUser);
 			} else {
-				console.log('No user is signed in'); // Debugging
+				console.log('No user is signed in');
 				setUser(null);
 			}
 		});
@@ -38,7 +38,7 @@ function AppNavigator() {
 	return (
 		<NavigationContainer>
 			<Stack.Navigator
-					initialRouteName={user ? "ProfileScreen" : "LoginScreen"} // Définir la route initiale en fonction de user
+					initialRouteName={user ? "ProfileScreen" : "LoginScreen"}
 					screenOptions={({ route, navigation }) => ({
 				headerShown: false,
 					})}

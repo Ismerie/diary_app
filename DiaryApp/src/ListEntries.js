@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { db, auth } from './config/firebaseConfig';
 import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useUser } from "./UserContext"
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { getEmojiFeeling } from './utils/emote';
 
 export default function ListEntries() {
 	const [entries, setEntries] = useState([]);
@@ -12,8 +14,6 @@ export default function ListEntries() {
 
 	const navigation = useNavigation();
 
-	console.log(entries)
-	console.log(userEmail)
 	// Récupérer les entrées de Firestore
 	useEffect(() => {
 		const fetchEntries = async () => {
@@ -64,17 +64,22 @@ export default function ListEntries() {
 				keyExtractor={(item) => item.id}
 				renderItem={({ item }) => (
 					<View style={styles.entry}>
-						<Text style={styles.title}>{item.title}</Text>
-						<Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
-						<Button
-							title="View"
+						<TouchableOpacity 
+							style={styles.buttonViewEntry} 
 							onPress={() => navigation.navigate('ViewEntryScreen', { entry: item })}
-						/>
-						<Button
-							title="Delete"
-							color="red"
-							onPress={() => deleteEntry(item.id)}
-						/>
+						>
+							<Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
+							<Text style={styles.title}>{item.title}</Text>
+                		</TouchableOpacity>
+						<View>
+						</View>
+						{/* Container pour les boutons, qui les aligne à droite */}
+						<View style={styles.buttonsContainer}>
+							<Text style={styles.emote}>{getEmojiFeeling(item.feeling)}</Text>
+							<TouchableOpacity style={styles.buttonDelete} onPress={() => deleteEntry(item.id)}>
+								<Ionicons name="trash-outline" size={22} color="#F6D5C2" style={styles.icon} />
+                        	</TouchableOpacity>
+						</View>
 					</View>
 				)}
 			/>
@@ -85,21 +90,47 @@ export default function ListEntries() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 20,
 	},
 	entry: {
+		backgroundColor: '#f7a072',
 		marginBottom: 20,
 		padding: 15,
 		borderWidth: 1,
-		borderColor: '#ccc',
-		borderRadius: 5,
+		borderColor: '#f7a072',
+		borderRadius: 10,
+		flexDirection: 'row', // Permet aux éléments enfants de s'aligner horizontalement
+		justifyContent: 'space-between', // Aligne les éléments dans l'espace disponible
+		alignItems: 'center', // Centre verticalement les éléments
+		width: '100%'
 	},
 	title: {
 		fontSize: 18,
 		fontWeight: 'bold',
+		flex: 1, // Le titre prend l'espace restant
 	},
 	date: {
 		fontSize: 14,
-		color: '#888',
+		color: '#F6D5C2',
 	},
+	buttonViewEntry: {
+		padding: 10,
+		borderRadius: 5,
+	},
+	buttonsContainer: {
+		flexDirection: 'row', // Aligne les boutons horizontalement
+		justifyContent: 'flex-end', // Place les boutons à droite
+		alignItems: 'center', // Centre les boutons verticalement
+	},
+	buttonDelete: {
+		padding: 10,
+		borderRadius: 5,
+	},
+	fontButton: {
+		color: 'white',
+		fontSize: 16,
+	},
+	emote: {
+		fontSize: 25,
+		marginRight: 10,
+	}
 });

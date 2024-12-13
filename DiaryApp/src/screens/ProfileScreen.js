@@ -8,15 +8,16 @@ import ListEntries from '../ListEntries';
 export default function ProfileScreen({ navigation}) {
     const { user, setUser } = useUser();
 //   const { token } = route.params; // Token ou données envoyées lors de la navigation
-    console.log("ProfileScreen")
-    console.log(user)
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Bienvenue !</Text>
-            <ListEntries />
-            <TouchableOpacity style={styles.buttonNewEntry} onPress={() => navigation.navigate("AddEntryScreen")}>
-					<Text style={styles.fontButton}>New entry</Text>
-			</TouchableOpacity>
+            <Text style={styles.title}>your notes</Text>
+            <View style={{flex: 1}}>
+                <ListEntries />
+                <TouchableOpacity style={styles.buttonNewEntry} onPress={() => navigation.navigate("AddEntryScreen")}>
+                        <Text style={styles.fontButton}>New note</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -24,14 +25,22 @@ export default function ProfileScreen({ navigation}) {
 const styles = StyleSheet.create({
     container: { 
         flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+        padding: 40,
     },
     title: { 
-        fontSize: 24, 
-        marginBottom: 20 
+        fontSize: 40, 
+        marginBottom: 20,
+        fontWeight: 600,
+        textAlign: 'start',
     },
     buttonNewEntry: {
-        backgroundColor: 'pink',
+        backgroundColor: '#eddea4',
+        borderRadius: 10,
+        padding: 20,
+        width: "100%",
+    },
+    fontButton: {
+        fontSize: 24,
+        textAlign: 'center'
     }
 });

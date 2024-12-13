@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, TouchableOpacity, Text, ImageBackground } from 'react-native';
+import { StyleSheet, SafeAreaView, TouchableOpacity, Text, ImageBackground, View } from 'react-native';
 import { auth, google_client } from "../config/firebaseConfig";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import axios from "axios";
 import { useUser } from "../UserContext"
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -58,7 +59,10 @@ export default function LoginScreen({navigation}) {
 				<Text style={styles.title}>Open your <Text style={{color: '#f7a072'}}>Diary</Text></Text>
 				{/* Bouton Google */}
 				<TouchableOpacity style={styles.buttonLogin} onPress={() => promptAsync()}>
-					<Text style={styles.fontButton}>Login with Google</Text>
+					<View style={styles.buttonContent}>
+						<Text style={styles.fontButton}>Login with </Text>
+						<Ionicons name="logo-google" size={30} color="black" style={styles.icon} />
+					</View>	
 				</TouchableOpacity>
 			</SafeAreaView>
 		</ImageBackground>
@@ -94,10 +98,20 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	fontButton: {
+		flex: 2,
 		fontSize: 30,
-		textAlign: 'center',
+		textAlign: 'right',
 	},
 	backgroundImage: {
         flex: 1,
-    }
+    },
+	icon: {
+		flex: 1,
+		textAlign: 'start',
+	},
+	buttonContent: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+},
 });
