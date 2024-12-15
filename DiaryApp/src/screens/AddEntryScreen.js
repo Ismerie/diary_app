@@ -70,7 +70,7 @@ export default function AddDiaryEntry({ navigation }) {
 								styles.feelingIcon,
 								feeling === getStrFeeling(icon) && styles.selectedFeeling, // Applique le style si sélectionné
 							]}
-							onPress={() => setFeeling(getStrFeeling(icon))} // Met à jour l'état feeling
+							onPress={() => setFeeling(getStrFeeling(icon))}
 						>
 							<Text style={[styles.icon, feeling === getStrFeeling(icon) && styles.selectedIcon]}>
 								{icon}
@@ -179,17 +179,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 25,
-        backgroundColor: '#f0f0f0', // Couleur par défaut
+        backgroundColor: '#f0f0f0',
         margin: 5,
     },
     selectedFeeling: {
-        backgroundColor: '#eddea4', // Couleur de fond pour l'icône sélectionnée
+        backgroundColor: '#eddea4',
     },
     icon: {
         fontSize: 24,
-        color: 'black', // Couleur par défaut de l'icône
+        color: 'black',
     },
     selectedIcon: {
-        color: 'white', // Change la couleur de l'icône lorsqu'elle est sélectionnée
+        color: 'white',
     },
 });

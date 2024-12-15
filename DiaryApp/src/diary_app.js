@@ -59,8 +59,7 @@ export default function App() {
 			NavigationBar.setBehaviorAsync('overlay-swipe');
 		}
 	}, []);
-
-	// Si l'utilisateur est connecté, il est redirigé vers ProfileScreen, sinon vers LoginScreen
+	
 	return (
 			<UserProvider>
 				<AppNavigator />

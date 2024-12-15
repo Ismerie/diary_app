@@ -7,7 +7,6 @@ import { auth } from "../config/firebaseConfig";
 import ListEntries from '../ListEntries';
 
 export default function ProfileScreen({ navigation }) {
-    const { user, setUser } = useUser();
 
     const handleButtonLogOut = () => {
         auth.signOut()
@@ -21,7 +20,6 @@ export default function ProfileScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-            {/* Barre supérieure contenant le bouton de déconnexion et le titre */}
             <View style={styles.header}>
                 <Text style={styles.title}>your notes</Text>
                 <TouchableOpacity style={styles.buttonLogOut} onPress={handleButtonLogOut}>

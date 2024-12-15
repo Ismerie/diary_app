@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, SafeAreaView, TouchableOpacity, Text, ImageBackground, View } from 'react-native';
 import { auth, google_client } from "../config/firebaseConfig";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import axios from "axios";
 import { useUser } from "../UserContext"
 import { Ionicons } from '@expo/vector-icons';
 import { signInWithCredential, GoogleAuthProvider } from "firebase/auth"

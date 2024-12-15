@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { db, auth } from './config/firebaseConfig';
+import { View, Text, FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { db } from './config/firebaseConfig';
 import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useUser } from "./UserContext"
 import { useNavigation } from '@react-navigation/native';
@@ -14,10 +14,9 @@ export default function ListEntries() {
 
 	const navigation = useNavigation();
 
-	// Récupérer les entrées de Firestore
 	useEffect(() => {
 		const fetchEntries = async () => {
-			if (!userEmail) return; // Ne pas exécuter si l'utilisateur n'est pas connecté
+			if (!userEmail) return;
 
 			try {
 				// Créer la requête Firestore
@@ -27,9 +26,7 @@ export default function ListEntries() {
 					orderBy("date", "desc")
 				);
 
-				// Exécuter la requête
 				const querySnapshot = await getDocs(entriesQuery);
-				console.log(querySnapshot);
 				// Mapper les documents dans un tableau
 				const fetchedEntries = querySnapshot.docs.map(doc => ({
 					id: doc.id,
@@ -44,12 +41,11 @@ export default function ListEntries() {
 
 		fetchEntries();
 	}, [userEmail]);
-
-	// Supprimer une entrée
+	
 	const deleteEntry = async (id) => {
 		try {
-			await deleteDoc(doc(db, "diaryEntries", id)); // Supprimer l'entrée
-			setEntries(prevEntries => prevEntries.filter(entry => entry.id !== id)); // Mettre à jour l'état local
+			await deleteDoc(doc(db, "diaryEntries", id));
+			setEntries(prevEntries => prevEntries.filter(entry => entry.id !== id));
 			Alert.alert('Success', 'Entry deleted successfully!');
 		} catch (error) {
 			console.error('Error deleting entry:', error);
@@ -70,13 +66,13 @@ export default function ListEntries() {
 						>
 							<Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
 							<Text style={styles.title}>{item.title}</Text>
-                		</TouchableOpacity>
+						</TouchableOpacity>
 						{/* Container pour les boutons, qui les aligne à droite */}
 						<View style={styles.buttonsContainer}>
 							<Text style={styles.emote}>{getEmojiFeeling(item.feeling)}</Text>
 							<TouchableOpacity style={styles.buttonDelete} onPress={() => deleteEntry(item.id)}>
 								<Ionicons name="trash-outline" size={22} color="#F6D5C2" style={styles.icon} />
-                        	</TouchableOpacity>
+							</TouchableOpacity>
 						</View>
 					</View>
 				)}
